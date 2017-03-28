@@ -9,3 +9,5 @@ app.get('/charts', (request, response) => {
 });
 
 app.listen(port, console.log(`Currently listening on port: ${port}`));
+
+module.exports = app;

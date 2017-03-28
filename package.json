@@ -4,7 +4,7 @@
   "description": "Displays extensive health metrics for KPCC",
   "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha spec/**/*.js",
     "build": "webpack -p",
     "build:watch": "webpack -d --watch",
     "server": "nodemon server/index.js",
@@ -17,16 +17,18 @@
   "author": "SCPR",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/arellaTV/scpr-health-dashboard/issues"
+    "url": "https://github.com/SCPR/scpr-health-dashboard/issues"
   },
-  "homepage": "https://github.com/arellaTV/scpr-health-dashboard#readme",
+  "homepage": "https://github.com/SCPR/scpr-health-dashboard#readme",
   "devDependencies": {
     "babel-core": "^6.24.0",
     "babel-loader": "^6.4.1",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-react": "^6.23.0",
+    "chai": "^3.5.0",
     "chart.js": "^2.5.0",
     "express": "^4.15.2",
+    "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
