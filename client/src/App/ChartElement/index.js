@@ -7,23 +7,23 @@ class ChartElement extends React.Component {
   }
 
   componentDidMount() {
-    const tableLabels = this.props.tableLabels.slice(1).map(column => column.label);
-    const currentChart = this.props.chart.slice(1);
-    const chartLabel = this.props.chart[0].v;
-    const chartData = currentChart.map(datapoint => {
-      if (datapoint === null) {
-        return null
-      }
-      return datapoint.v;
+    const columnLabel = this.props.columnLabel;
+    const chartData = this.props.chart;
+    const dataLabel = this.props.dataLabel.map(date => {
+      var monthNames = [
+        "January", "February", "March", "April", "May", "June", "July",
+        "August", "September", "October", "November", "December"
+      ];
+      var month = monthNames[date.getMonth()];
+      return `${month} ${date.getFullYear()}`;
     });
     const context = document.getElementById(this.props.index);
-
     const myChart = new Chart(context, {
-      type: 'line',
+      type: 'bar',
       data: {
-        labels: tableLabels,
+        labels: dataLabel,
         datasets: [{
-            label: chartLabel,
+            label: columnLabel,
             data: chartData,
             backgroundColor: 'rgba(255, 99, 132, 0.2)',
             borderColor: 'rgba(255,99,132,1)',
@@ -33,7 +33,7 @@ class ChartElement extends React.Component {
           responsive: true,
           title: {
             display: true,
-            text: chartLabel,
+            text: columnLabel,
           }
         }
       }
