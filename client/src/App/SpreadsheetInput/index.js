@@ -8,21 +8,25 @@ class SpreadsheetInput extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    let url = event.target[0].value;
+    const url = event.target[0].value;
     const parser = document.createElement('a');
     parser.href = url;
     const sheetId = parser.pathname.slice(1).split('/')[2];
-    const queryUrl = 'https://docs.google.com/spreadsheets/d/' + sheetId;
+    const queryUrl = `https://docs.google.com/spreadsheets/d/${sheetId}`;
     this.props.ingestSpreadsheet(queryUrl);
   }
 
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
-        <input type='url' />
+        <input type="url" />
       </form>
-    )
+    );
   }
 }
+
+SpreadsheetInput.propTypes = {
+  ingestSpreadsheet: React.PropTypes.function.isRequired,
+};
 
 export default SpreadsheetInput;

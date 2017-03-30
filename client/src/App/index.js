@@ -1,7 +1,7 @@
 import React from 'react';
+import shortid from 'shortid';
 import ChartElement from './ChartElement';
 import SpreadsheetInput from './SpreadsheetInput';
-import shortid from 'shortid';
 
 class App extends React.Component {
   constructor() {
@@ -9,7 +9,7 @@ class App extends React.Component {
     this.state = {
       columns: [],
       dataSourceUrl: 'https://docs.google.com/spreadsheets/d/1I9KFzjL6pIraJJScjNyCODlMDSXihpbr9XGzDqWdVuo/',
-    }
+    };
 
     this.googleQuery = this.googleQuery.bind(this);
     this.getColumns = this.getColumns.bind(this);
@@ -18,6 +18,18 @@ class App extends React.Component {
 
   componentDidMount() {
     this.ingestSpreadsheet(this.state.dataSourceUrl);
+  }
+
+  getColumns(response) {
+    const table = response.getDataTable();
+    const columns = [];
+    for (let i = 1; i < table.getNumberOfColumns(); i += 1) {
+      columns.push({
+        label: table.getColumnLabel(i),
+        id: table.getColumnId(i),
+      });
+    }
+    this.setState({ columns, dataSourceUrl: this.state.dataSourceUrl });
   }
 
   ingestSpreadsheet(spreadsheetUrl) {
@@ -33,42 +45,27 @@ class App extends React.Component {
     query.send(callback);
   }
 
-  getColumns(response) {
-    const table = response.getDataTable();
-    const columns = [];
-    for (let i = 1; i < table.getNumberOfColumns(); i++) {
-      columns.push({
-        label: table.getColumnLabel(i),
-        id: table.getColumnId(i)
-      });
-    }
-    this.setState({ columns, dataSourceUrl: this.state.dataSourceUrl });
-  }
-
   renderColumns() {
-    return this.state.columns.map((column, index) => {
-      return (
-        <ChartElement key={shortid.generate()}
-                      id={column.id}
-                      label={column.label}
-                      dataSourceUrl={this.state.dataSourceUrl}
-                      googleQuery={this.googleQuery}/>
-      )
-    })
+    return this.state.columns.map(column =>
+      <ChartElement
+        key={shortid.generate()}
+        id={column.id}
+        label={column.label}
+        dataSourceUrl={this.state.dataSourceUrl}
+        googleQuery={this.googleQuery}
+      />);
   }
 
   render() {
     return (
       <div>
-        <SpreadsheetInput ingestSpreadsheet={this.ingestSpreadsheet}/>
-        <div className='grid-container'>
+        <SpreadsheetInput ingestSpreadsheet={this.ingestSpreadsheet} />
+        <div className="grid-container">
           {this.renderColumns()}
         </div>
       </div>
-    )
+    );
   }
 }
 
 export default App;
-
-

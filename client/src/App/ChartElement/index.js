@@ -6,8 +6,9 @@ class ChartElement extends React.Component {
     super(props);
     this.state = {
       dataArray: [],
-      labelArray: []
-    }
+      labelArray: [],
+      type: 'bar',
+    };
 
     this.getChartData = this.getChartData.bind(this);
     this.buildChart = this.buildChart.bind(this);
@@ -24,37 +25,51 @@ class ChartElement extends React.Component {
     const dataArray = tableJSON.rows.map(datapoint => datapoint.c[1].v);
     const labelArray = tableJSON.rows.map(datapoint => datapoint.c[0].f);
     this.setState({ dataArray, labelArray });
-    this.state.currentChart ? this.state.currentChart.update() : this.buildChart();
+
+    if (this.state.currentChart) {
+      this.state.currentChart.update();
+    } else {
+      this.buildChart();
+    }
   }
 
   buildChart() {
     this.currentChart = new Chart(this.context, {
-      type: 'bar',
+      type: this.state.type,
       data: {
         labels: this.state.labelArray,
         datasets: [{
-            label: this.props.label,
-            data: this.state.dataArray,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255,99,132,1)',
-            borderWidth: 1,
-          }],
+          label: this.props.label,
+          data: this.state.dataArray,
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255,99,132,1)',
+          borderWidth: 1,
+        }],
         options: {
-          responsive: true
-        }
-      }
+          responsive: true,
+        },
+      },
     });
   }
 
   render() {
     return (
-      <div className='square'>
-        <canvas ref={(elem) => { this.context = elem; }}
-                width='400'
-                height='300'></canvas>
+      <div className="square">
+        <canvas
+          ref={(elem) => { this.context = elem; }}
+          width="400"
+          height="300"
+        />
       </div>
-    )
+    );
   }
 }
+
+ChartElement.propTypes = {
+  id: React.PropTypes.number.isRequired,
+  label: React.PropTypes.string.isRequired,
+  dataSourceUrl: React.PropTypes.string.isRequired,
+  googleQuery: React.PropTypes.function.isRequired,
+};
 
 export default ChartElement;
