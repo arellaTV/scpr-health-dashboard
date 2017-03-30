@@ -66,10 +66,10 @@ class ChartElement extends React.Component {
 }
 
 ChartElement.propTypes = {
-  id: React.PropTypes.number.isRequired,
+  id: React.PropTypes.string.isRequired,
   label: React.PropTypes.string.isRequired,
   dataSourceUrl: React.PropTypes.string.isRequired,
-  googleQuery: React.PropTypes.function.isRequired,
+  googleQuery: React.PropTypes.func.isRequired,
 };
 
 export default ChartElement;

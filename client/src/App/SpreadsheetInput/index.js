@@ -26,7 +26,7 @@ class SpreadsheetInput extends React.Component {
 }
 
 SpreadsheetInput.propTypes = {
-  ingestSpreadsheet: React.PropTypes.function.isRequired,
+  ingestSpreadsheet: React.PropTypes.func.isRequired,
 };
 
 export default SpreadsheetInput;
