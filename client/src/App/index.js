@@ -1,16 +1,19 @@
 import React from 'react';
 import ChartElement from './ChartElement';
+import SpreadsheetInput from './SpreadsheetInput';
+import shortid from 'shortid';
 
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
       columns: [],
-      dataSourceUrl: 'https://docs.google.com/spreadsheets/d/1I9KFzjL6pIraJJScjNyCODlMDSXihpbr9XGzDqWdVuo/gviz/tq?gid=0&headers=1&tq=',
+      dataSourceUrl: 'https://docs.google.com/spreadsheets/d/1I9KFzjL6pIraJJScjNyCODlMDSXihpbr9XGzDqWdVuo/',
     }
 
     this.googleQuery = this.googleQuery.bind(this);
-    this.getColumns = this.getColumns.bind(this)
+    this.getColumns = this.getColumns.bind(this);
+    this.ingestSpreadsheet = this.ingestSpreadsheet.bind(this);
   }
 
   componentDidMount() {
@@ -18,12 +21,15 @@ class App extends React.Component {
   }
 
   ingestSpreadsheet(spreadsheetUrl) {
-    this.googleQuery("SELECT * order by A", spreadsheetUrl, this.getColumns)
+    this.googleQuery('SELECT * order by A', spreadsheetUrl, this.getColumns);
   }
 
-  googleQuery(string, spreadsheetUrl, callback) {
-    const queryString = encodeURIComponent(string);
-    const query = new google.visualization.Query(spreadsheetUrl + queryString);
+  googleQuery(queryString, spreadsheetUrl, callback) {
+    this.state.dataSourceUrl = spreadsheetUrl;
+    const encodedString = encodeURIComponent(queryString);
+    const suffix = '/gviz/tq?gid=0&headers=1&tq=';
+    const queryUrl = spreadsheetUrl + suffix;
+    const query = new google.visualization.Query(queryUrl + encodedString);
     query.send(callback);
   }
 
@@ -36,13 +42,13 @@ class App extends React.Component {
         id: table.getColumnId(i)
       });
     }
-    this.setState({ columns });
+    this.setState({ columns, dataSourceUrl: this.state.dataSourceUrl });
   }
 
   renderColumns() {
     return this.state.columns.map((column, index) => {
       return (
-        <ChartElement key={column.id}
+        <ChartElement key={shortid.generate()}
                       id={column.id}
                       label={column.label}
                       dataSourceUrl={this.state.dataSourceUrl}
@@ -54,8 +60,9 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <div className="grid-container">
-        {this.renderColumns()}
+        <SpreadsheetInput ingestSpreadsheet={this.ingestSpreadsheet}/>
+        <div className='grid-container'>
+          {this.renderColumns()}
         </div>
       </div>
     )

@@ -10,6 +10,7 @@ class ChartElement extends React.Component {
     }
 
     this.getChartData = this.getChartData.bind(this);
+    this.buildChart = this.buildChart.bind(this);
   }
 
   componentDidMount() {
@@ -23,12 +24,11 @@ class ChartElement extends React.Component {
     const dataArray = tableJSON.rows.map(datapoint => datapoint.c[1].v);
     const labelArray = tableJSON.rows.map(datapoint => datapoint.c[0].f);
     this.setState({ dataArray, labelArray });
-    this.buildChart();
+    this.state.currentChart ? this.state.currentChart.update() : this.buildChart();
   }
 
   buildChart() {
-    const context = document.getElementById(this.props.id);
-    const myChart = new Chart(context, {
+    this.currentChart = new Chart(this.context, {
       type: 'bar',
       data: {
         labels: this.state.labelArray,
@@ -40,20 +40,18 @@ class ChartElement extends React.Component {
             borderWidth: 1,
           }],
         options: {
-          responsive: true,
-          title: {
-            display: true,
-            text: this.props.label,
-          }
+          responsive: true
         }
       }
-    })
+    });
   }
 
   render() {
     return (
       <div className='square'>
-        <canvas id={this.props.id} width='400' height='300'></canvas>
+        <canvas ref={(elem) => { this.context = elem; }}
+                width='400'
+                height='300'></canvas>
       </div>
     )
   }
