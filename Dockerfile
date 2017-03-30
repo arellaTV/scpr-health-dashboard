@@ -15,4 +15,8 @@ RUN groupadd -r nodejs \
     && useradd -m -r -g nodejs nodejs
 USER nodejs
 
+# set environment variables
+ENV CLIENT_ID=$CLIENT_ID
+ENV SCOPE=$SCOPE
+
 CMD [ "npm", "run", "server" ]

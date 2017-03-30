@@ -54,7 +54,7 @@ class ChartElement extends React.Component {
 
   render() {
     return (
-      <div className="square">
+      <div className="chart box-shadow">
         <canvas
           ref={(elem) => { this.context = elem; }}
           width="400"

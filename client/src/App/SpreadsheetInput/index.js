@@ -9,11 +9,26 @@ class SpreadsheetInput extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const url = event.target[0].value;
-    const parser = document.createElement('a');
-    parser.href = url;
-    const sheetId = parser.pathname.slice(1).split('/')[2];
-    const queryUrl = `https://docs.google.com/spreadsheets/d/${sheetId}`;
-    this.props.ingestSpreadsheet(queryUrl);
+    if (this.validateInput(url)) {
+      const parser = document.createElement('a');
+      parser.href = url;
+      if (parser.host === 'docs.google.com') {
+        const sheetId = parser.pathname.slice(1).split('/')[2];
+        const queryUrl = `https://docs.google.com/spreadsheets/d/${sheetId}`;
+        this.props.ingestSpreadsheet(queryUrl);
+      }
+    }
+  }
+
+  validateInput(input) {
+    const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+    var regex = new RegExp(expression);
+
+    if (input.match(regex)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   render() {

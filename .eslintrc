@@ -7,10 +7,17 @@
     ],
     "rules": {
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-      "no-console": "off"
+      "no-console": "off",
+      "no-unused-vars": "off",
     },
     "globals": {
       "google": false,
-      "document": false
+      "document": false,
+      "gapi": false,
+      "fetch": false,
+      "describe": false,
+      "it": false,
+      "before": false,
+      "window": false,
     },
 }

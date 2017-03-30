@@ -1,3 +1,4 @@
 node_modules
 public/dist/bundle.js
 server/data/dummy.js
+env.sh

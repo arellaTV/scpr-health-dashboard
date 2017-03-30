@@ -1,5 +1,5 @@
 body {
-  background-color: white;
+  background-color: #f7f7f7;
 }
 
 .grid-container {
@@ -9,65 +9,41 @@ body {
   align-items: center;
 }
 
-.square {
+.chart {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 25%;
   margin: 1em;
-  padding: 1em;
+  padding-top: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
   background-color: white;
   border-radius: 4px;
-  -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.16);
-  -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.16);
-  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.16);
 }
 
-.rectangle {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 55%;
-  margin: 1em;
-  padding: 1em;
-  background-color: white;
-  border-radius: 4px;
+.box-shadow {
   -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.16);
   -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.16);
   box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.16);
 }
 
 @media only screen and (max-width : 1200px) {
-  .square {
+  .chart {
     width: 25%;
-    margin: 1em;
-  }
-
-  .rectangle {
-    width: 55%;
     margin: 1em;
   }
 }
 
 @media only screen and (max-width : 992px) {
-  .square {
+  .chart {
     width: 35%;
-    margin: 1em;
-  }
-
-  .rectangle {
-    width: 80%;
     margin: 1em;
   }
 }
 
 @media only screen and (max-width : 768px) {
-  .square {
-    width: 85%;
-    margin: 1em;
-  }
-
-  .rectangle {
+  .chart {
     width: 85%;
     margin: 1em;
   }
