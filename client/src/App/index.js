@@ -8,16 +8,21 @@ class App extends React.Component {
     super();
     this.state = {
       columns: [],
-      dataSourceUrl: 'https://docs.google.com/spreadsheets/d/1I9KFzjL6pIraJJScjNyCODlMDSXihpbr9XGzDqWdVuo/',
-    };
+    }
 
     this.googleQuery = this.googleQuery.bind(this);
     this.getColumns = this.getColumns.bind(this);
     this.ingestSpreadsheet = this.ingestSpreadsheet.bind(this);
   }
 
-  componentDidMount() {
-    this.ingestSpreadsheet(this.state.dataSourceUrl);
+  ingestSpreadsheet(spreadsheetUrl) {
+    this.googleQuery("SELECT * order by A", spreadsheetUrl, this.getColumns)
+  }
+
+  googleQuery(string, spreadsheetUrl, callback) {
+    const queryString = encodeURIComponent(string);
+    const query = new google.visualization.Query(spreadsheetUrl + queryString);
+    query.send(callback);
   }
 
   getColumns(response) {
