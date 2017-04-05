@@ -6,6 +6,7 @@ class Authentication extends React.Component {
     this.state = {
       authenticationButton: 'Sign in',
       ingestStatus: '',
+      visibility: 'hide',
     };
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
@@ -24,15 +25,15 @@ class Authentication extends React.Component {
       .then((credentials) => {
         gapi.load('auth2', () => {
           const GoogleAuth = gapi.auth2.init(credentials);
-          this.setState({ GoogleAuth });
+          const visibility = 'visible';
+          this.setState({ GoogleAuth, visibility });
         });
       });
   }
 
   handleSignIn() {
     const GoogleAuth = this.state.GoogleAuth;
-    const options = { prompt: 'select_account' };
-    GoogleAuth.signIn(options).then(() => {
+    GoogleAuth.signIn().then(() => {
       const GoogleUser = GoogleAuth.currentUser.get();
       const AuthResponse = GoogleUser.getAuthResponse(true);
       this.setState({ authenticationButton: 'Sign out' });
@@ -59,7 +60,11 @@ class Authentication extends React.Component {
 
   render() {
     return (
-      <button id="authorize-button" onClick={this.handleAuthentication}>
+      <button
+        id="authorize-button"
+        className={this.state.visibility}
+        onClick={this.handleAuthentication}
+      >
         {this.state.authenticationButton}
       </button>
     );

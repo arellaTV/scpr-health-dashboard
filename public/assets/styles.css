@@ -1,5 +1,16 @@
 body {
-  background-color: #f7f7f7;
+  /*background-color: #f7f7f7;*/
+  margin: 0;
+}
+
+.hide {
+  visibility: hidden;
+}
+
+.navigation {
+  background-color: white;
+  height: 5em;
+  margin: 0;
 }
 
 .grid-container {
@@ -19,7 +30,8 @@ body {
   padding-left: 1em;
   padding-right: 1em;
   background-color: white;
-  border-radius: 4px;
+  /*border-radius: 4px;*/
+  flex-direction: column;
 }
 
 .box-shadow {

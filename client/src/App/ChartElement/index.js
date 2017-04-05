@@ -8,6 +8,7 @@ class ChartElement extends React.Component {
       dataArray: [],
       labelArray: [],
       type: 'bar',
+      startsAtZeroIndex: false,
     };
 
     this.getChartData = this.getChartData.bind(this);
@@ -47,9 +48,29 @@ class ChartElement extends React.Component {
         }],
         options: {
           responsive: true,
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: this.state.startsAtZeroIndex,
+              },
+            }],
+          },
         },
       },
     });
+  }
+
+  changeIndex() {
+    this.setState({
+      startsAtZeroIndex: !this.state.startsAtZeroIndex,
+    });
+    console.log(this.state.startsAtZeroIndex, this.currentChart);
+    this.buildChart();
+    this.currentChart.update();
+  }
+
+  changeDateRange() {
+    console.log('changing date range');
   }
 
   render() {
@@ -60,6 +81,8 @@ class ChartElement extends React.Component {
           width="400"
           height="300"
         />
+        <button onClick={this.changeIndex.bind(this)}>Zoom</button>
+        <button onClick={this.changeDateRange.bind(this)}>Change date range</button>
       </div>
     );
   }
