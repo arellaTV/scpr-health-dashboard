@@ -8,7 +8,6 @@ class ChartElement extends React.Component {
       dataArray: [],
       labelArray: [],
       type: 'bar',
-      startsAtZeroIndex: false,
     };
 
     this.getChartData = this.getChartData.bind(this);
@@ -48,24 +47,20 @@ class ChartElement extends React.Component {
         }],
         options: {
           responsive: true,
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: this.state.startsAtZeroIndex,
-              },
-            }],
-          },
         },
       },
     });
   }
 
   changeIndex() {
-    this.setState({
-      startsAtZeroIndex: !this.state.startsAtZeroIndex,
-    });
     console.log(this.state.startsAtZeroIndex, this.currentChart);
-    this.buildChart();
+    const options = this.currentChart.config.options;
+    const yAxis = options.scales.yAxes[0];
+    if (!yAxis.ticks.beginAtZero) {
+      yAxis.ticks.beginAtZero = true;
+    } else {
+      yAxis.ticks.beginAtZero = false;
+    }
     this.currentChart.update();
   }
 
