@@ -106,7 +106,7 @@ class ChartElement extends React.Component {
   }
 
   changeDateRange() {
-    if (this.state.dateRangeModified){
+    if (this.state.dateRangeModified) {
       const query = `select A, ${this.props.id} order by A`;
       this.props.googleQuery(query, this.props.dataSourceUrl, this.getChartData);
       this.setState({ dateRangeModified: false, startDate: '', endDate: '' });
@@ -114,13 +114,12 @@ class ChartElement extends React.Component {
     }
 
     if (this.state.startDate && this.state.endDate) {
-      var startDate = new Date(this.state.startDate).toISOString().slice(0,10);
-      var endDate = new Date(this.state.endDate).toISOString().slice(0,10);
+      const startDate = new Date(this.state.startDate).toISOString().slice(0, 10);
+      const endDate = new Date(this.state.endDate).toISOString().slice(0, 10);
       const query = `select A, ${this.props.id} where date '${startDate}' <= A and date '${endDate}' >= A order by A`;
       this.props.googleQuery(query, this.props.dataSourceUrl, this.getChartData);
       this.setState({ dateRangeModified: true });
     }
-
   }
 
   captureElement(event) {
