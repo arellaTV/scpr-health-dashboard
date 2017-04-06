@@ -11,6 +11,7 @@ class ChartElement extends React.Component {
       startAtIndexZero: false,
       startDate: '',
       endDate: '',
+      dateRangeModified: false,
     };
 
     this.getChartData = this.getChartData.bind(this);
@@ -105,27 +106,31 @@ class ChartElement extends React.Component {
   }
 
   changeDateRange() {
-    console.log('start date:', this.state.startDate, 'end date:', this.state.endDate);
+    if (this.state.dateRangeModified){
+      const query = `select A, ${this.props.id} order by A`;
+      this.props.googleQuery(query, this.props.dataSourceUrl, this.getChartData);
+      this.setState({ dateRangeModified: false, startDate: '', endDate: '' });
+      return;
+    }
+
     if (this.state.startDate && this.state.endDate) {
-      console.log('changing date range');
       var startDate = new Date(this.state.startDate).toISOString().slice(0,10);
       var endDate = new Date(this.state.endDate).toISOString().slice(0,10);
       const query = `select A, ${this.props.id} where date '${startDate}' <= A and date '${endDate}' >= A order by A`;
-      console.log(query);
       this.props.googleQuery(query, this.props.dataSourceUrl, this.getChartData);
+      this.setState({ dateRangeModified: true });
     }
+
   }
 
   captureElement(event) {
     const activePoint = this.currentChart.getElementAtEvent(event)[0];
     if (activePoint) {
       if (!this.state.startDate) {
-        console.log('setting start date');
         this.setState({ startDate: activePoint._model.label });
       }
 
       if (this.state.startDate && !this.state.endDate) {
-        console.log('setting end date');
         this.setState({ endDate: activePoint._model.label });
       }
     }
