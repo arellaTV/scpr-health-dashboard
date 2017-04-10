@@ -3,6 +3,9 @@ import chaiHttp from 'chai-http';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
+import 'isomorphic-fetch';
+import fetchMock from 'fetch-mock';
+
 import server from './../server';
 import App from './../client/src/App';
 import SpreadsheetInput from './../client/src/App/SpreadsheetInput';
@@ -14,14 +17,14 @@ chai.use(chaiHttp);
 
 describe('Endpoints', () => {
   describe('/credentials:', () => {
-    it('should GET an object with client_id and scope', (done) => {
+    it('should GET an object credentials', (done) => {
       chai.request(server)
       .get('/credentials')
       .end((error, response) => {
         response.should.have.status(200);
         response.body.should.be.an('object');
-        response.body.should.have.property('client_id');
-        response.body.should.have.property('scope');
+        response.body.should.have.property('credentials');
+        response.body.credentials.should.have.property('client_id');
         done();
       });
     });
@@ -118,6 +121,7 @@ describe('Component rendering', () => {
   describe('Sign-in:', () => {
     it('should render a sign in button', (done) => {
       const wrapper = shallow(<Authentication updateAccessToken={propStub} />);
+      wrapper.instance().checkIfAlreadySignedIn();
       const button = wrapper.find('button');
       button.should.have.length(1);
       button.prop('children').should.equal('Sign in');
@@ -180,6 +184,30 @@ describe('Component rendering', () => {
       wrapper.instance().handleSignOut();
       wrapper.state('authenticationButton').should.equal('Sign in');
       stub.calledWith(null).should.equal(true);
+      done();
+    });
+  });
+
+  describe('Sessions:', () => {
+    it('should render sign out button if logged into current session', (done) => {
+      const sessionUserStub = { Zi: { access_token: 'access_token_stub' } };
+      const wrapper = mount(<Authentication updateAccessToken={propStub} />);
+      wrapper.instance().checkIfAlreadySignedIn(sessionUserStub);
+      const button = wrapper.find('button');
+      button.should.have.length(1);
+      button.prop('children').should.equal('Sign out');
+      wrapper.state('authenticationButton').should.equal('Sign out');
+      done();
+    });
+
+    it('should render sign in button if current session is empty', (done) => {
+      const sessionUserStub = null;
+      const wrapper = mount(<Authentication updateAccessToken={propStub} />);
+      wrapper.instance().checkIfAlreadySignedIn(sessionUserStub);
+      const button = wrapper.find('button');
+      button.should.have.length(1);
+      button.prop('children').should.equal('Sign in');
+      wrapper.state('authenticationButton').should.equal('Sign in');
       done();
     });
   });

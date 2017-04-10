@@ -1,5 +1,4 @@
 const jsdom = require('jsdom');
-import 'isomorphic-fetch';
 
 global.document = jsdom.jsdom(`<html><head>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
@@ -24,3 +23,4 @@ Object.keys(document.defaultView).forEach((property) => {
 global.navigator = {
   userAgent: 'node.js',
 };
+
