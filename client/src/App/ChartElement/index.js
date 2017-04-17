@@ -8,7 +8,7 @@ class ChartElement extends React.Component {
       dataArray: [],
       labelArray: [],
       type: 'bar',
-      startAtIndexZero: false,
+      startAtIndexZero: true,
       startDate: '',
       endDate: '',
       dateRangeModified: false,
