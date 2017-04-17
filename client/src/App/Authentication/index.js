@@ -6,7 +6,6 @@ class Authentication extends React.Component {
     this.state = {
       authenticationButton: '',
       ingestStatus: '',
-      visibility: 'hide',
     };
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
@@ -28,8 +27,9 @@ class Authentication extends React.Component {
       .then(response => response.json())
       .then((responseJson) => {
         gapi.load('auth2', () => {
-          const GoogleAuth = gapi.auth2.init(credentials);
+          const GoogleAuth = gapi.auth2.init(responseJson.credentials);
           const visibility = 'visible';
+          this.checkIfAlreadySignedIn(responseJson.current_user);
           this.setState({ GoogleAuth, visibility });
         });
       });
