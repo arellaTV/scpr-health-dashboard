@@ -139,14 +139,12 @@ class ChartElement extends React.Component {
     return (
       <div className="chart box-shadow">
         <canvas
-          onClick={this.captureElement}
           ref={(elem) => { this.context = elem; }}
           width="400"
           height="300"
         />
         <button onClick={this.changeIndex}>Zoom</button>
         <button onClick={this.changeType}>Type</button>
-        <button onClick={this.changeDateRange}>Date</button>
       </div>
     );
   }

@@ -9,12 +9,14 @@ class App extends React.Component {
     super();
     this.state = {
       columns: [],
+      signedIn: false,
     };
 
     this.googleQuery = this.googleQuery.bind(this);
     this.getColumns = this.getColumns.bind(this);
     this.ingestSpreadsheet = this.ingestSpreadsheet.bind(this);
     this.updateAccessToken = this.updateAccessToken.bind(this);
+    this.updateAuthenticationStatus = this.updateAuthenticationStatus.bind(this);
   }
 
   getColumns(response) {
@@ -61,6 +63,11 @@ class App extends React.Component {
     }
   }
 
+  updateAuthenticationStatus(authenticationResponse) {
+    const signedIn = authenticationResponse.signedIn;
+    this.setState({ signedIn });
+  }
+
   renderColumns() {
     return this.state.columns.map(column =>
       <ChartElement
@@ -73,13 +80,22 @@ class App extends React.Component {
   }
 
   render() {
+    let columns;
+    this.state.signedIn ? columns = this.renderColumns() : columns = [];
     return (
       <div>
-        <Authentication updateAccessToken={this.updateAccessToken} />
-        <SpreadsheetInput ingestSpreadsheet={this.ingestSpreadsheet} />
+        <Authentication
+          updateAccessToken={this.updateAccessToken}
+          updateAuthenticationStatus={this.updateAuthenticationStatus}
+          signedIn={this.state.signedIn}
+        />
+        <SpreadsheetInput
+          ingestSpreadsheet={this.ingestSpreadsheet}
+          signedIn={this.state.signedIn}
+        />
         <span>{this.state.ingestStatus}</span>
         <div className="grid-container">
-          {this.renderColumns()}
+          {columns}
         </div>
       </div>
     );

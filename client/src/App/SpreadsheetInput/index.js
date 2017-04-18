@@ -1,4 +1,5 @@
 import React from 'react';
+import validateInput from './actions';
 
 class SpreadsheetInput extends React.Component {
   constructor(props) {
@@ -9,7 +10,7 @@ class SpreadsheetInput extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const url = event.target[0].value;
-    if (this.validateInput(url)) {
+    if (validateInput(url)) {
       const parser = document.createElement('a');
       parser.href = url;
       if (parser.host === 'docs.google.com') {
@@ -20,28 +21,18 @@ class SpreadsheetInput extends React.Component {
     }
   }
 
-  validateInput(input) {
-    const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-    var regex = new RegExp(expression);
-
-    if (input.match(regex)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input type="url" />
-      </form>
-    );
+    let form = null;
+    if (this.props.signedIn) {
+      form = <form onSubmit={this.handleSubmit}><input type="url" /></form>;
+    }
+    return form;
   }
 }
 
 SpreadsheetInput.propTypes = {
   ingestSpreadsheet: React.PropTypes.func.isRequired,
+  signedIn: React.PropTypes.bool.isRequired,
 };
 
 export default SpreadsheetInput;

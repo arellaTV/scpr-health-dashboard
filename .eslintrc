@@ -9,6 +9,9 @@
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
       "no-console": "off",
       "no-unused-vars": "off",
+      "no-underscore-dangle": "off",
+      "no-useless-escape": "off",
+      "no-unused-expressions": "off"
     },
     "globals": {
       "google": false,

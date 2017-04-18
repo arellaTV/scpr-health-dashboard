@@ -8,7 +8,6 @@ class Authentication extends React.Component {
       ingestStatus: '',
     };
 
-    this.handleAuthentication = this.handleAuthentication.bind(this);
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
   }
@@ -25,17 +24,18 @@ class Authentication extends React.Component {
 
     fetch('/credentials', options)
       .then(response => response.json())
-      .then((responseJson) => {
-        gapi.load('auth2', () => {
-          const GoogleAuth = gapi.auth2.init(responseJson.credentials);
-          const visibility = 'visible';
-          this.checkIfAlreadySignedIn(responseJson.current_user);
-          this.setState({ GoogleAuth, visibility });
-        });
-      });
+      .then(credentials => this.props.updateAuthenticationStatus(credentials));
   }
 
-  checkIfAlreadySignedIn(sessionUser) {
+  initializeGoogleAuthentication(responseJson) {
+    gapi.load('auth2', () => {
+      const GoogleAuth = gapi.auth2.init(responseJson.credentials);
+      this.checkIfAlreadySignedInWithGoogle(responseJson.current_user);
+      this.setState({ GoogleAuth });
+    });
+  }
+
+  checkIfAlreadySignedInWithGoogle(sessionUser) {
     if (sessionUser) {
       const GoogleUser = sessionUser;
       const AuthResponse = GoogleUser.Zi;
@@ -46,9 +46,29 @@ class Authentication extends React.Component {
     }
   }
 
-  handleSignIn() {
+  handleSignIn(event) {
+    event.preventDefault();
+
+    const body = JSON.stringify({
+      username: event.target[0].value,
+      password: event.target[1].value,
+    });
+
+    fetch('/signin', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+    })
+    .then(response => response.json())
+    .then(authenticationResponse => this.props.updateAuthenticationStatus(authenticationResponse));
+  }
+
+  googleSignIn() {
     const GoogleAuth = this.state.GoogleAuth;
-    GoogleAuth.signIn().then(() => {
+    const options = { prompt: 'select_account' };
+
+    GoogleAuth.signIn(options).then(() => {
       const GoogleUser = GoogleAuth.currentUser.get();
       const AuthResponse = GoogleUser.getAuthResponse(true);
       this.setState({ authenticationButton: 'Sign out' });
@@ -64,7 +84,7 @@ class Authentication extends React.Component {
     });
   }
 
-  handleSignOut() {
+  googleSignOut() {
     const GoogleAuth = this.state.GoogleAuth;
     GoogleAuth.signOut().then(() => {
       this.setState({ authenticationButton: 'Sign in' });
@@ -77,7 +97,23 @@ class Authentication extends React.Component {
     });
   }
 
-  handleAuthentication() {
+  handleSignOut() {
+    fetch('/signout', {
+      method: 'POST',
+      credentials: 'same-origin',
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      console.log(responseJson.message);
+      const authenticationResponse = {
+        message: 'Signed out!',
+        signedIn: false,
+      };
+      this.props.updateAuthenticationStatus(authenticationResponse);
+    });
+  }
+
+  handleGoogleAuthentication() {
     const GoogleUser = this.state.GoogleAuth.currentUser.get();
     if (GoogleUser.isSignedIn()) {
       this.handleSignOut();
@@ -87,20 +123,28 @@ class Authentication extends React.Component {
   }
 
   render() {
-    return (
-      <button
-        id="authorize-button"
-        className={this.state.visibility}
-        onClick={this.handleAuthentication}
-      >
-        {this.state.authenticationButton}
-      </button>
-    );
+    let AuthenticationDOMNode;
+
+    if (this.props.signedIn) {
+      AuthenticationDOMNode = <button onClick={this.handleSignOut}>Sign out</button>;
+    } else {
+      AuthenticationDOMNode = (
+        <form onSubmit={this.handleSignIn}>
+          <input type="text" />
+          <input type="password" />
+          <input type="submit" />
+        </form>
+      );
+    }
+
+    return AuthenticationDOMNode;
   }
 }
 
 Authentication.propTypes = {
+  signedIn: React.PropTypes.bool.isRequired,
   updateAccessToken: React.PropTypes.func.isRequired,
+  updateAuthenticationStatus: React.PropTypes.func.isRequired,
 };
 
 export default Authentication;
