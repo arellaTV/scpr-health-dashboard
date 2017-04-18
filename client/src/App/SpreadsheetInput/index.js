@@ -5,6 +5,9 @@ class SpreadsheetInput extends React.Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.state = {
+      currentUrl: '',
+    };
   }
 
   handleSubmit(event) {
@@ -16,7 +19,7 @@ class SpreadsheetInput extends React.Component {
       if (parser.host === 'docs.google.com') {
         const sheetId = parser.pathname.slice(1).split('/')[2];
         const queryUrl = `https://docs.google.com/spreadsheets/d/${sheetId}`;
-        this.props.ingestSpreadsheet(queryUrl);
+        this.props.history.push(`/${sheetId}`);
       }
     }
   }
@@ -24,15 +27,18 @@ class SpreadsheetInput extends React.Component {
   render() {
     let form = null;
     if (this.props.signedIn) {
-      form = <form onSubmit={this.handleSubmit}><input type="url" /></form>;
+      form = (<form onSubmit={this.handleSubmit}>
+        <span className="spreadsheet-input__label">Google Sheets URL: </span>
+        <input id="spreadsheet-input__url" type="url" />
+      </form>);
     }
     return form;
   }
 }
 
 SpreadsheetInput.propTypes = {
-  ingestSpreadsheet: React.PropTypes.func.isRequired,
   signedIn: React.PropTypes.bool.isRequired,
+  history: React.PropTypes.shape({ push: React.PropTypes.func }).isRequired,
 };
 
 export default SpreadsheetInput;

@@ -49,9 +49,12 @@ class Authentication extends React.Component {
   handleSignIn(event) {
     event.preventDefault();
 
+    const username = event.target[0];
+    const password = event.target[1];
+
     const body = JSON.stringify({
-      username: event.target[0].value,
-      password: event.target[1].value,
+      username: username.value,
+      password: password.value,
     });
 
     fetch('/signin', {
@@ -61,7 +64,14 @@ class Authentication extends React.Component {
       body,
     })
     .then(response => response.json())
-    .then(authenticationResponse => this.props.updateAuthenticationStatus(authenticationResponse));
+    .then((authenticationResponse) => {
+      if (authenticationResponse.signedIn) {
+        this.props.updateAuthenticationStatus(authenticationResponse);
+      } else {
+        username.classList.add('authentication__input--invalid-credentials');
+        password.classList.add('authentication__input--invalid-credentials');
+      }
+    });
   }
 
   googleSignIn() {
@@ -126,14 +136,19 @@ class Authentication extends React.Component {
     let AuthenticationDOMNode;
 
     if (this.props.signedIn) {
-      AuthenticationDOMNode = <button onClick={this.handleSignOut}>Sign out</button>;
+      AuthenticationDOMNode = <button onClick={this.handleSignOut}>Log out</button>;
     } else {
       AuthenticationDOMNode = (
-        <form onSubmit={this.handleSignIn}>
-          <input type="text" />
-          <input type="password" />
-          <input type="submit" />
-        </form>
+        <div id="main-body">
+          <div className="authentication box-shadow">
+            <h2>WELCOME</h2>
+            <form onSubmit={this.handleSignIn}>
+              <p>USERNAME: <input className="authentication__input" type="text" /></p>
+              <p>PASSWORD: <input className="authentication__input" type="password" /></p>
+              <input type="submit" value="Log in" />
+            </form>
+          </div>
+        </div>
       );
     }
 

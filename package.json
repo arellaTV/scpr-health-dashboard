@@ -49,6 +49,8 @@
     "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
     "react-dom": "https://registry.npmjs.org/react-dom/-/react-dom-15.4.2.tgz",
+    "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.1",
     "shortid": "^2.2.8",
     "sinon": "^2.1.0",
     "webpack": "^2.3.2",

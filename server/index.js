@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -11,8 +12,8 @@ const globalUsername = process.env.USERNAME || null;
 const globalPassword = process.env.PASSWORD || null;
 let globalHash = null;
 
-bcrypt.genSalt(saltRounds, (err, salt) => {
-  bcrypt.hash(globalPassword, salt, (err, hash) => {
+bcrypt.genSalt(saltRounds, (saltError, salt) => {
+  bcrypt.hash(globalPassword, salt, (hashError, hash) => {
     globalHash = hash;
   });
 });
@@ -62,6 +63,10 @@ app.post('/signout', (request, response) => {
   request.session.destroy();
   response.send({ message: 'Successfully destroyed the session' });
 });
+
+app.get('/*', (request, response) => {
+  response.sendFile(path.resolve(__dirname, '../public/index.html'));
+})
 
 app.listen(port, console.log(`Currently listening on port: ${port}`));
 

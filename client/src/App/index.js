@@ -3,6 +3,7 @@ import shortid from 'shortid';
 import ChartElement from './ChartElement';
 import SpreadsheetInput from './SpreadsheetInput';
 import Authentication from './Authentication';
+import ShareButton from './ShareButton';
 
 class App extends React.Component {
   constructor() {
@@ -17,6 +18,22 @@ class App extends React.Component {
     this.ingestSpreadsheet = this.ingestSpreadsheet.bind(this);
     this.updateAccessToken = this.updateAccessToken.bind(this);
     this.updateAuthenticationStatus = this.updateAuthenticationStatus.bind(this);
+  }
+
+  componentDidMount() {
+    const sheetId = this.props.match.params.sheetId;
+    if (sheetId) {
+      const queryUrl = `https://docs.google.com/spreadsheets/d/${sheetId}`;
+      this.ingestSpreadsheet(queryUrl);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const sheetId = nextProps.match.params.sheetId;
+    if (sheetId) {
+      const queryUrl = `https://docs.google.com/spreadsheets/d/${sheetId}`;
+      this.ingestSpreadsheet(queryUrl);
+    }
   }
 
   getColumns(response) {
@@ -84,15 +101,23 @@ class App extends React.Component {
     this.state.signedIn ? columns = this.renderColumns() : columns = [];
     return (
       <div>
-        <Authentication
-          updateAccessToken={this.updateAccessToken}
-          updateAuthenticationStatus={this.updateAuthenticationStatus}
-          signedIn={this.state.signedIn}
-        />
-        <SpreadsheetInput
-          ingestSpreadsheet={this.ingestSpreadsheet}
-          signedIn={this.state.signedIn}
-        />
+        <div className="navigation-bar">
+          <SpreadsheetInput
+            signedIn={this.state.signedIn}
+            history={this.props.history}
+          />
+          <div className="navigation-bar--right">
+            <ShareButton signedIn={this.state.signedIn} />
+            <Authentication
+              updateAccessToken={this.updateAccessToken}
+              updateAuthenticationStatus={this.updateAuthenticationStatus}
+              signedIn={this.state.signedIn}
+            />
+          </div>
+        </div>
+        <div className="navigation-bar__title box-shadow">
+          <span className="navigation-bar__title-text">SCPR HEALTH DASHBOARD</span>
+        </div>
         <span>{this.state.ingestStatus}</span>
         <div className="grid-container">
           {columns}
@@ -101,5 +126,9 @@ class App extends React.Component {
     );
   }
 }
+
+App.propTypes = {
+  history: React.PropTypes.shape({ push: React.PropTypes.func }).isRequired,
+};
 
 export default App;

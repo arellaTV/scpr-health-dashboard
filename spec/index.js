@@ -73,17 +73,12 @@ describe('Component rendering', () => {
       props.should.have.property('type');
       props.type.should.equal('url');
     });
-
-    // // The below test is discontinued until Google Auth link is implemented
-    // it('should render a single authentication button', () => {
-    //   const wrapper = shallow(<Authentication updateAccessToken={propStub} />);
-    //   wrapper.find('button').should.have.length(1);
-    // });
   });
 
   describe('No charts should be rendered for:', () => {
     it('non-url inputs', (done) => {
-      const wrapper = mount(<App />);
+      const match = { params: { sheetId: '' } };
+      const wrapper = mount(<App match={match} />);
       wrapper.instance().setState({ signedIn: true });
       wrapper.find('form').simulate('submit', {
         target: [{ value: 'This string is not a valid url' }],
@@ -94,7 +89,8 @@ describe('Component rendering', () => {
     });
 
     it('domains other than docs.google.com', (done) => {
-      const wrapper = mount(<App />);
+      const match = { params: { sheetId: '' } };
+      const wrapper = mount(<App match={match} />);
       wrapper.instance().setState({ signedIn: true });
       wrapper.find('form').simulate('submit', {
         target: [{ value: 'http://google.com' }],
@@ -107,114 +103,28 @@ describe('Component rendering', () => {
 
   describe('Submitting a sheet:', () => {
     it('should call google.visualization.query and query.send once', (done) => {
-      google.visualization.Query = sinon.spy();
-      google.visualization.Query.prototype.send = sinon.spy();
+      const pushStub = {
+        push: sinon.spy(),
+      };
 
-      const wrapper = mount(<App />);
-      wrapper.instance().setState({ signedIn: true });
+      const wrapper = mount(<SpreadsheetInput signedIn={true} history={pushStub} />);
       wrapper.find('form').simulate('submit', {
         target: [{ value: 'https://docs.google.com/spreadsheets/d/stubsheetID/' }],
       });
 
-      google.visualization.Query.should.have.property('callCount', 1);
-      google.visualization.Query.prototype.send.should.have.property('callCount', 1);
+      pushStub.push.should.have.property('callCount', 1);
       done();
     });
   });
 
   describe('Sign-in:', () => {
-    // // The below tests are discontinued until Google Auth link is implemented
-    // it('should render a username and password field', (done) => {
-    //   const wrapper = shallow(<Authentication updateAccessToken={propStub} signedIn={false} />);
-    //   wrapper.instance().checkIfAlreadySignedIn();
-    //   const button = wrapper.find('button');
-    //   button.should.have.length(1);
-    //   button.prop('children').should.equal('Sign in');
-    //   wrapper.state('authenticationButton').should.equal('Sign in');
-    //   done();
-    // });
-
-    // it('should render a sign out button after signing in', (done) => {
-    //   const wrapper = shallow(<Authentication updateAccessToken={propStub} />);
-    //   wrapper.instance().setState({ GoogleAuth });
-    //   wrapper.instance().handleSignIn();
-    //
-    //   const button = wrapper.find('button');
-    //   button.should.have.length(1);
-    //   button.prop('children').should.equal('Sign out');
-    //   wrapper.state('authenticationButton').should.equal('Sign out');
-    //   done();
-    // });
-
     it('should attach access_token to state', (done) => {
-      const wrapper = shallow(<App />);
+      const match = { params: { sheetId: '' } };
+      const wrapper = mount(<App match={match} />);
       wrapper.instance().updateAccessToken('access_token_stub');
 
       wrapper.state('accessToken').should.equal('access_token_stub');
       done();
     });
-  });
-
-  describe('Sign-out:', () => {
-    // // The below tests are discontinued until Google Auth link is implemented
-    // it('should sign out on clicking Sign out', (done) => {
-    //   const stub = sinon.spy();
-    //   const wrapper = mount(<Authentication updateAccessToken={stub} />);
-    //   wrapper.instance().setState({ GoogleAuth });
-    //   wrapper.instance().setState({ authenticationButton: 'Sign out' });
-    //   const button = wrapper.find('button');
-    //   button.simulate('click');
-    //   stub.should.have.property('callCount', 1);
-    //   done();
-    // });
-
-    // it('should render a sign in button after successful sign out', (done) => {
-    //   const wrapper = mount(<Authentication updateAccessToken={propStub} />);
-    //   const button = wrapper.find('button');
-    //   wrapper.instance().setState({ GoogleAuth });
-    //   wrapper.instance().setState({ authenticationButton: 'Sign out' });
-    //   wrapper.state('authenticationButton').should.equal('Sign out');
-    //   button.prop('children').should.equal('Sign out');
-    //
-    //   button.simulate('click');
-    //   button.prop('children').should.equal('Sign in');
-    //   wrapper.state('authenticationButton').should.equal('Sign in');
-    //   done();
-    // });
-
-    // it('should destroy the access token', (done) => {
-    //   const stub = sinon.spy();
-    //   const wrapper = shallow(<Authentication updateAccessToken={stub} />);
-    //   wrapper.instance().setState({ GoogleAuth });
-    //   wrapper.instance().setState({ authenticationButton: 'Sign out' });
-    //   wrapper.instance().handleSignOut();
-    //   wrapper.state('authenticationButton').should.equal('Sign in');
-    //   stub.calledWith(null).should.equal(true);
-    //   done();
-    // });
-  });
-
-  describe('Sessions:', () => {
-    // it('should render sign out button if logged into current session', (done) => {
-    //   const sessionUserStub = { Zi: { access_token: 'access_token_stub' } };
-    //   const wrapper = mount(<Authentication updateAccessToken={propStub} />);
-    //   wrapper.instance().checkIfAlreadySignedIn(sessionUserStub);
-    //   const button = wrapper.find('button');
-    //   button.should.have.length(1);
-    //   button.prop('children').should.equal('Sign out');
-    //   wrapper.state('authenticationButton').should.equal('Sign out');
-    //   done();
-    // });
-
-    // it('should render sign in button if current session is empty', (done) => {
-    //   const sessionUserStub = null;
-    //   const wrapper = mount(<Authentication updateAccessToken={propStub} />);
-    //   wrapper.instance().checkIfAlreadySignedIn(sessionUserStub);
-    //   const button = wrapper.find('button');
-    //   button.should.have.length(1);
-    //   button.prop('children').should.equal('Sign in');
-    //   wrapper.state('authenticationButton').should.equal('Sign in');
-    //   done();
-    // });
   });
 });

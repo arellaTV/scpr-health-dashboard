@@ -12,6 +12,8 @@ class ChartElement extends React.Component {
       startDate: '',
       endDate: '',
       dateRangeModified: false,
+      zoomIcon: 'zoom-in',
+      typeIcon: 'bar-chart',
     };
 
     this.getChartData = this.getChartData.bind(this);
@@ -85,11 +87,13 @@ class ChartElement extends React.Component {
       yAxis.ticks.beginAtZero = false;
       this.setState({
         startAtIndexZero: false,
+        zoomIcon: 'zoom-out',
       });
     } else {
       yAxis.ticks.beginAtZero = true;
       this.setState({
         startAtIndexZero: true,
+        zoomIcon: 'zoom-in',
       });
     }
     this.currentChart.update();
@@ -98,10 +102,10 @@ class ChartElement extends React.Component {
   changeType() {
     if (this.state.type === 'bar') {
       this.buildChart('line');
-      this.setState({ type: 'line' });
+      this.setState({ type: 'line', typeIcon: 'line-chart' });
     } else {
       this.buildChart('bar');
-      this.setState({ type: 'bar' });
+      this.setState({ type: 'bar', typeIcon: 'bar-chart' });
     }
   }
 
@@ -137,14 +141,15 @@ class ChartElement extends React.Component {
 
   render() {
     return (
-      <div className="chart box-shadow">
-        <canvas
-          ref={(elem) => { this.context = elem; }}
-          width="400"
-          height="300"
-        />
-        <button onClick={this.changeIndex}>Zoom</button>
-        <button onClick={this.changeType}>Type</button>
+      <div className="chart-element box-shadow">
+        <h4>{this.props.label}</h4>
+        <button className="chart-element__button" onClick={this.changeIndex}>
+          <img title="Zoom" alt="Zoom" src={`/assets/icons/${this.state.zoomIcon}.svg`} />
+        </button>
+        <button className="chart-element__button" onClick={this.changeType}>
+          <img title="Change type" alt="Type" src={`/assets/icons/${this.state.typeIcon}.svg`} />
+        </button>
+        <canvas ref={(elem) => { this.context = elem; }} width="400" height="300" />
       </div>
     );
   }
