@@ -5,9 +5,7 @@ class SpreadsheetInput extends React.Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.state = {
-      currentUrl: '',
-    };
+    this.state = { currentUrl: '' };
   }
 
   handleSubmit(event) {

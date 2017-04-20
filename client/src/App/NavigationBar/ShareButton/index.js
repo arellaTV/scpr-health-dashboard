@@ -11,7 +11,7 @@ const ShareButton = (props) => {
     }
   };
 
-  let shareButton;
+  let shareButton = null;
   if (props.signedIn) {
     shareButton = (
       <div className="sharebutton">
@@ -21,10 +21,7 @@ const ShareButton = (props) => {
         <button onClick={copyToClipboard}>Copy to clipboard</button>
       </div>
     );
-  } else {
-    shareButton = <div />;
   }
-
   return shareButton;
 };
 

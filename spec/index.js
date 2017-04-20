@@ -8,8 +8,8 @@ import fetchMock from 'fetch-mock';
 
 import server from './../server';
 import App from './../client/src/App';
-import SpreadsheetInput from './../client/src/App/SpreadsheetInput';
-import Authentication from './../client/src/App/Authentication';
+import SpreadsheetInput from './../client/src/App/NavigationBar/SpreadsheetInput';
+import Authentication from './../client/src/App/NavigationBar/Authentication';
 
 const should = chai.should();
 
